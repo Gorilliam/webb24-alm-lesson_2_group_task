@@ -125,8 +125,8 @@ describe("Product Model Test Suite", () => {
       expect(savedProduct.updatedAt).toBeDefined();
 
       const originalUpdatedAt = savedProduct.updatedAt;
-      await Product.findByIdAndUpdate(savedProduct._id, { price: 199.99 });
-      expect(savedProduct.updatedAt).not.toBe(originalUpdatedAt);
+      const updatedProduct = await Product.findByIdAndUpdate(savedProduct._id, { price: 199.99 },{new: true});
+      expect(updatedProduct.updatedAt).not.toEqual(originalUpdatedAt);
     });
 
     test("should have createdAt equal to updatedAt on creation", async () => {
