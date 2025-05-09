@@ -177,7 +177,14 @@ describe("Product Model Test Suite", () => {
       expect(names).toContain("iPhone 14");
       expect(names).toContain("MacBook Pro");
     });
-
+  
+    test("should return empty array for no matches", async () => {
+      const results = await Product.find(
+        { $text: { $search: "nonexistent" } },
+        { score: { $meta: "textScore" } }
+      );
+      expect(results.length).toBe(0);
+    });
   });
   
 });
