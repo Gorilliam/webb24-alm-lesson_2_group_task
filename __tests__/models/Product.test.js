@@ -165,6 +165,18 @@ describe("Product Model Test Suite", () => {
       expect(results.length).toBe(1);
       expect(results[0].name).toBe("Gaming Chair");
     });
+  
+    test("should return multiple products if search matches several", async () => {
+      const results = await Product.find(
+        { $text: { $search: "Apple" } },
+        { score: { $meta: "textScore" } }
+      ).sort({ score: { $meta: "textScore" } });
+  
+      expect(results.length).toBe(2);
+      const names = results.map((p) => p.name);
+      expect(names).toContain("iPhone 14");
+      expect(names).toContain("MacBook Pro");
+    });
 
   });
   
