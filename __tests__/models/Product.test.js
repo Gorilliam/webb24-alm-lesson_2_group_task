@@ -155,6 +155,16 @@ describe("Product Model Test Suite", () => {
       expect(results.length).toBe(1);
       expect(results[0].name).toBe("iPhone 14");
     });
+  
+    test("should find product by description", async () => {
+      const results = await Product.find(
+        { $text: { $search: "ergonomic" } },
+        { score: { $meta: "textScore" } }
+      );
+  
+      expect(results.length).toBe(1);
+      expect(results[0].name).toBe("Gaming Chair");
+    });
 
   });
   
