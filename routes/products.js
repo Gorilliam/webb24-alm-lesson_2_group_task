@@ -2,6 +2,24 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 
+//Seach filter for name and description
+router.get("/search", async (req, res) => {
+  try {
+    const query = req.query.q
+    if(!query) {
+      return res.status(400).json({ error: "Query parameter 'q' is required" })
+    }
+
+    const products = await Product.find(
+      { $text: { $search: query } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } })
+    res.json(products)
+  } catch (error) {
+    res.status(500).json({ error: "Error occured while searching" })
+  }
+})
+
 // GET all products
 router.get("/", async (req, res) => {
   try {
@@ -76,21 +94,6 @@ router.delete("/", async (req, res) => {
   }
 });
 
-router.get("/search", async (req, res) => {
-  try {
-    const query = req.query.q
-    if(!query) {
-      return res.status(400).json({ error: "Query parameter 'q' is required" })
-    }
 
-    const products = await Product.find(
-      { $text: { $search: query } },
-      { score: { $meta: "textScore" } }
-    ).sort({ score: { $meta: "textScore" } })
-    res.json(products)
-  } catch (error) {
-    res.status(500).json({ error: "Error occured while searching" })
-  }
-})
 
 module.exports = router;
