@@ -136,4 +136,59 @@ describe("Product Model Test Suite", () => {
       expect(savedProduct.createdAt).toBe(savedProduct.updatedAt);
     });
   });
+
+  describe("Test search filter by name and description", () => {
+    beforeEach(async () => {
+      await Product.deleteMany();
+  
+      await Product.insertMany([
+        { name: "iPhone 14", price: 999, description: "Latest Apple smartphone" },
+        { name: "Samsung Galaxy S23", price: 899, description: "Flagship Android phone" },
+        { name: "MacBook Pro", price: 1999, description: "Apple laptop with M2 chip" },
+        { name: "Gaming Chair", price: 199, description: "Ergonomic chair for gamers" },
+        { name: "USB-C Cable", price: 9.99, description: "Fast charging cable" },
+      ]);
+    });
+  
+    test("should find product by name", async () => {
+      const results = await Product.find(
+        { $text: { $search: "iPhone" } },
+        { score: { $meta: "textScore" } }
+      ).sort({ score: { $meta: "textScore" } });
+  
+      expect(results.length).toBe(1);
+      expect(results[0].name).toBe("iPhone 14");
+    });
+  
+    test("should find product by description", async () => {
+      const results = await Product.find(
+        { $text: { $search: "ergonomic" } },
+        { score: { $meta: "textScore" } }
+      );
+  
+      expect(results.length).toBe(1);
+      expect(results[0].name).toBe("Gaming Chair");
+    });
+  
+    test("should return multiple products if search matches several", async () => {
+      const results = await Product.find(
+        { $text: { $search: "Apple" } },
+        { score: { $meta: "textScore" } }
+      ).sort({ score: { $meta: "textScore" } });
+  
+      expect(results.length).toBe(2);
+      const names = results.map((p) => p.name);
+      expect(names).toContain("iPhone 14");
+      expect(names).toContain("MacBook Pro");
+    });
+  
+    test("should return empty array for no matches", async () => {
+      const results = await Product.find(
+        { $text: { $search: "nonexistent" } },
+        { score: { $meta: "textScore" } }
+      );
+      expect(results.length).toBe(0);
+    });
+  });
+  
 });
