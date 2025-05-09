@@ -142,11 +142,11 @@ describe("Product Model Test Suite", () => {
       await Product.deleteMany();
   
       await Product.insertMany([
-        { name: "iPhone 14", price: 999, description: "Latest Apple smartphone" },
-        { name: "Samsung Galaxy S23", price: 899, description: "Flagship Android phone" },
-        { name: "MacBook Pro", price: 1999, description: "Apple laptop with M2 chip" },
-        { name: "Gaming Chair", price: 199, description: "Ergonomic chair for gamers" },
-        { name: "USB-C Cable", price: 9.99, description: "Fast charging cable" },
+        { name: "iPhone 14", price: 999, description: "Latest Apple smartphone", category: "Electronics" },
+        { name: "Samsung Galaxy S23", price: 899, description: "Flagship Android phone", category: "Electronics" },
+        { name: "MacBook Pro", price: 1999, description: "Apple laptop with M2 chip", category: "Electronics" },
+        { name: "Gaming Chair", price: 199, description: "Ergonomic chair for gamers", category: "Electronics" },
+        { name: "USB-C Cable", price: 9.99, description: "Fast charging cable", category: "Electronics" },
       ]);
     });
   
